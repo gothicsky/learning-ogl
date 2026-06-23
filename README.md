@@ -27,3 +27,10 @@ To convert color value in float to a color value in bytes (between 0 and 255), w
 
 ## Buffer Idea 
 
+Since we want to display a 3D object on our screen, we will need to access it occasionnaly. Since we normally store the objects in RAM, we will have to send it to the GPU(which is quite some distance away) from there and it will be redundant. 
+
+_Buffer: a block of memory, similar to an array_
+
+Instead we will send the object to buffer which is inside gpu's vram (video memory), store it there with a bufferId and easily access it from there when we need it!
+
+Additionally there is no specific requirement for the way which we pass data to the gpu in ogl. We can structure it however we like but some ways are more practical than others.
