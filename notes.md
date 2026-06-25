@@ -7,9 +7,9 @@
 _Pipeline: Series of actions applied to some input to get an output_
 
 Firstly we will want to 
--[]Get a model
--[]Put it on the screen
--[]Fill in the triangles
+- [ ]Get a model
+- [ ]Put it on the screen
+- [ ]Fill in the triangles
 
 _Vertex: A point in 3D space with various attributes such as position and color_
 
