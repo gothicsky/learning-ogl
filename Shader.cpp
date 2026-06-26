@@ -143,7 +143,7 @@ char * readEntireFile(const char *filename) {
     char *text;
     int flenght=0, count=0, numLines=0;
 
-    FILE *infile = fopen(filename, "r");
+    FILE *infile = fopen(filename, "rb");
 
     if (infile == NULL) {
         fprintf(stderr ,"Couldn't open %s", filename);
@@ -159,8 +159,20 @@ char * readEntireFile(const char *filename) {
     size_t flRead = fread(text, sizeof(char) ,flenght ,infile);
     text[flRead]='\0';
     if (flRead != flenght) {
+        // fprintf(stderr, "Couldn't read whole file");
         PRINT_ERR("Couldn't read whole file");
     }
 
     return text;
+}
+
+void bind(Shader *shader) {
+    glUseProgram(shader->id);
+}
+
+void clear(Shader *shader) {
+
+    glDeleteProgram(shader->id);
+
+    shader->id = 0;
 }
