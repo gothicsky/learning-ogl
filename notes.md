@@ -35,6 +35,27 @@ Instead we will send the object to buffer which is inside gpu's vram (video memo
 
 Additionally there is no specific requirement for the way which we pass data to the gpu in ogl. We can structure it however we like but some ways are more practical than others.
 
+## Displaying things
+
+Every time we draw something, we draw it into an internal buffer. In order to display that thing we draw onto the buffer we need to swap that buffer with the window. 
+
+So first draw on internal buffer then swap it with the one on the screen 
+
+## Passing attribute data to gpu
+
+Opengl is a State Machine
+_State Machine: Has a lot of global variables and uses the same things until you change them_
+
+In order to pass data into CPU, after defining that data, we should: 
+- first create a buffer 
+- then use that buffer (dictate we will work on that buffer)
+- lastly draw on that buffer
+
+To draw on another buffer we should switch from using previous buffer to using the current buffer. 
+
+_Binding: using a buffer_
+_Bound Buffer: the buffer that is being used_
+
 
 # How it all works together (Coding Part)
 
@@ -46,13 +67,19 @@ include standart libraries you need
 
 include openglErrorReporting.h //Comes with the llgd's ogl setup
 
+
+### c. Data we will be passing
+
+Define a global (preferably float) array for the attributes we want to pass to the gpu 
+
+
+
 ### b. Main function
 
 1. Ascension 
 Note: Can't load ogl before setting context
 - Initialize glfw with an error check
 - (Optional) Add glfwWindowHint so it works on Apple devices
-
 
 2. Create a window
 Functions used: glfwCreateWindow()
@@ -67,15 +94,29 @@ Functions used: glfwMakeContextCurrent()
 Functions used: gladLoadGLLoader(), glfwGetProcAddress() 
 - Run gladLoadGLLoader with glfwGetProcAddress type converted to (GLADloadproc) as it's argument and do an error check for it.
 
-5. Enable ogl error reported
+5. Enable ogl error reporting
 Functions used: enableReportGlErrors()
 - enable error report for ogl errors using the function 
 
+8. Using buffers to pass our attrib data into the gpu 
+Functions used: glGenBuffers(), glBindBuffer() ,glBufferData() 
+- First declare, define then initialize the buffer to 0. $^2$
+- Secondly generate an ID for that buffer 
+- Then bind the buffer you want to use 
+- Lastly fill that buffer with data that we want to pass  
+
 6. Window loop 
-Functions used: glClear(), glfwWindowShouldClose(), glfwSwapBuffers(), glfwPollEvents()
+Functions used: glfwWindowShouldClose(), glClear(), glfwSwapBuffers(), glfwPollEvents()
 Macros used: GL_COLOR_BUFFER_BIT
 - Create a loop with ShouldClose function returning true for our window as it's condition 
-- First clear the screen *$^1$
+- Clear the screen $^1$
+- Swap buffer to display things on the screen after rending them
+- Check for events 
+
+7. Cleansing 
+Functions used: glfwDestroyWindow(), glfwTerminate()
+- Before terminating the main loop, destroy the window 
+- Terminate glfw
 
 
 
@@ -89,7 +130,25 @@ Macros used: GL_COLOR_BUFFER_BIT
 
 
 
+### Notes
+$^1$ glClear automatically clears to black color, in order to reset to a different color, run glClearColor before glClear. glClearColor takes effect only when glClear is run. 
+
+$^2$ Can also declare an array of buffers, in that case glGenBuffers(n, buffer) where n is is num of entries and buffer is the begging address to the array. When binding an array of buffers bind one by one buffer[0] etc. 
+Easy to miss: Every time we call bufferData it rewrites buffer with newData, glBufferSubData to rewrite only a part of it instead  
+
+glBufferData vs glBufferSubData
+
+glBufferData(   GL_ARRAY_BUFFER, sizeof(Data), data,       GL_STATIC_DRAW)
+                 buffer type       size        data           usage 
+
+glBufferSubData(GL_ARRAY_BUFFER,    0,      sizeof(data),  &data )
+                 buffer type      offset    number of     source data
+                                          bytes to copy
 
 
 
-### Appendix
+
+
+### Resources
+
+- Useful website for finding ogl functions *https://docs.g*_
