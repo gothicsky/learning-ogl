@@ -151,4 +151,4 @@ glBufferSubData(GL_ARRAY_BUFFER,    0,      sizeof(data),  &data )
 
 ### Resources
 
-- Useful website for finding ogl functions *https://docs.g*_
+- Useful website for finding ogl functions *https://docs.gl*_
