@@ -103,26 +103,23 @@ int main()
 #pragma endregion
 
 
+
+#pragma region loadShader
+
+    Shader shader;
+
+    loadShaderProgramFromFile(&shader, RESOURCES_PATH "myshader.vert", RESOURCES_PATH "myshader.frag");
+
+    bind(&shader);
+
+#pragma endregion
+
+
     while (!glfwWindowShouldClose(window))
     {
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // //legacy code part
-        //
-        // glBegin(GL_TRIANGLES);
-        // glVertex2f(0,1);
-        // glColor3f(1,0,0);
-        //
-        // glVertex2f(-1,-1);
-        // glColor3f(0,1,0);
-        //
-        // glVertex2f(1,-1);
-        // glColor3f(0,0,1);
-        //
-        // glEnd();
-        // //and here ends the legacy part
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
