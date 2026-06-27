@@ -159,6 +159,62 @@ Functions used: glfwDestroyWindow(), glfwTerminate()
 return type: char *
 arguments: char *filename
 
+##### createShaderFromData()
+return type: GLint
+arguments: const char *data, GLenum shaderType
+Functions used: glCreateShader(), glShaderSource(), glCompileShader() //for the main body
+                glGetShaderiv(), glGetShaderInfoLog(), glDeleteShader() //for the error check
+
+1. Variable with type GLuint gets shaderId 
+2. Give data to shader. (via the shaderId)
+3. Compile the shader. (via the shaderId)
+
+//Checking for errors 
+
+1. Initialize some variable result, of type GLint to 0 
+2. Ask opengl for any errors(GL_COMPILE_STATUS), if there is save that to result
+3. The function will return 0 if no errors check for that, if there is an error:
+4. Initialize some string, message and int l to 0
+5. Ask opengl for the error message's lenght (GL_INFO_LOG_LENGHT), save that to l 
+6. Check if the lenght is greater than 0, otherwise there is an unknown error 
+7. If there is an error message, allocate memory to message at the lenght of the error log 
+8. Get info log and save it to message using the function
+9. Print the message as an error, end of if
+10. delete the shader, return 0
+
+//if no errors
+
+4. Return shaderId 
+
+##### loadShaderProgramFromData()
+return type: bool
+arguments: Shader *shader, const char *vertexShaderData, const char *fragmentShaderData
+Functions used: createShaderFromData(), glCreateProgram(), glAttachShader(), glLinkProgram(), glDeteShader(), glValidateProgram()
+                glGetProgramiv(), glGetProgramInfoLog(), glDeleteProgram() //for the error check
+
+1. Compile vertex shader by creating a some variable, vertexId and assigning it the shaderId from createShader function with vertexShaderData and shader type as it's arguments 
+2. Check if vertexId = 0, if so return 0 
+3. Same step for fragmentId with fragmentShaderData as it's argument (also check id) 
+4. Id in shader struct gets an id from glCreateProgram
+5. Attach both fragment shader and vertex shader using their id's to programs id 
+6. Link the id in struct shader 
+7. Delete the vertex and fragment shader since we linked them and don't need them seperately anymore 
+
+//Check for error 
+
+1. Initialize some variable result, of type GLint to 0 
+2. Ask opengl for any errors(GL_LINK_STATUS), if there is save that to result
+3. The function will return 0 if no errors check for that, if there is an error:
+4. Initialize some string, message and int l to 0
+5. Ask opengl for the error message's lenght (GL_INFO_LOG_LENGHT), save that to l 
+6. Allocate memory to message at the lenght of the error log 
+7. Get info log and save it to message using the function
+8. Print the message as an error, free the message
+9. Delete the program via the id in the shader struct (where we saved the program id to)
+10. return 0 
+
+8. Validate program 
+9. return true 
 
 ##### loadShaderProgramFromFile()
 return type: bool
@@ -170,12 +226,6 @@ Functions used: readEntireFile(), loadShaderProgramFromData()
 3. declare a variable of bool type as the result from loadShaderProgramFromFile() with the data we just got as it's arguments
 4. free the Data we read previously
 5. return the result 
-
-
-
-
-
-
 
 
 
@@ -198,6 +248,7 @@ glBufferSubData(GL_ARRAY_BUFFER,    0,      sizeof(data),  &data )
 
 $^3$ in glVertexAttribData(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)\*6, (void *)(sizeof(float)\*3)) for the pointer (void \*) type conversion is neccessary
 
+$^4$ arg2 is how many strings we have in the data we are passing(arg3)
 
 ### Resources
 
