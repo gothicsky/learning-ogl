@@ -43,6 +43,8 @@ So first draw on internal buffer then swap it with the one on the screen
 
 ## Passing attribute data to gpu
 
+#### Creating and filling a buffer
+
 Opengl is a State Machine
 _State Machine: Has a lot of global variables and uses the same things until you change them_
 
@@ -55,6 +57,24 @@ To draw on another buffer we should switch from using previous buffer to using t
 
 _Binding: using a buffer_
 _Bound Buffer: the buffer that is being used_
+
+#### Infastructure for passing the buffer to GPU
+
+We've created a buffer and placed data into it in the previous part, but that buffer hasn't been passed anywere yet nor has it been defined. 
+Every GPU currently available has a minimum of sixteen attributes, which are indexed from zero ([0]->[15])
+So we can assign 0 as the vertex attribute and 1 as color(fragment) then we should tell opengl how to read this data, finally defining it. 
+
+## Loading Shaders 
+
+A shader has two components _fragment shader_ and _vertex shader_ their combination is called a program in ogl terms. 
+
+Since we will write shaders in .frag and .vert files we want to first read them, afterwards we will load and combile and link them together. 
+
+We will have four main functions: LoadShaderProgramFromFile for reading and loading shader content from file
+                                  LoadShaderProgramFromData for compiling and linking 
+                                  bind for telling ogl to use the shader
+                                  clear for deleting the shaders 
+
 
 
 # How it all works together (Coding Part)
@@ -98,18 +118,27 @@ Functions used: gladLoadGLLoader(), glfwGetProcAddress()
 Functions used: enableReportGlErrors()
 - enable error report for ogl errors using the function 
 
-8. Using buffers to pass our attrib data into the gpu 
+8. Generating buffer we will use to pass our data to gpu 
 Functions used: glGenBuffers(), glBindBuffer() ,glBufferData() 
 - First declare, define then initialize the buffer to 0. $^2$
 - Secondly generate an ID for that buffer 
 - Then bind the buffer you want to use 
 - Lastly fill that buffer with data that we want to pass  
 
+9. Defining how we want to pass our data to GPU
+Functions used: glEnableVertexArray(), glVertexAttribPointer()
+- Enable attribute for position
+- Tell how you want this data to be processed$^3$ 
+- Repeat for other attributes such as color, that are in the buffer you are using
+
 6. Window loop 
-Functions used: glfwWindowShouldClose(), glClear(), glfwSwapBuffers(), glfwPollEvents()
+Functions used: glfwWindowShouldClose(), glClear(), glfwSwapBuffers(), glfwPollEvents(), glDrawArrays()
 Macros used: GL_COLOR_BUFFER_BIT
 - Create a loop with ShouldClose function returning true for our window as it's condition 
 - Clear the screen $^1$
+
+- (After defining data for the buffer and loading shaders and writing shaders) Draw Triangle 
+
 - Swap buffer to display things on the screen after rending them
 - Check for events 
 
@@ -119,7 +148,28 @@ Functions used: glfwDestroyWindow(), glfwTerminate()
 - Terminate glfw
 
 
+### d. Loading Shaders 
 
+#### a. Shaders.h 
+1. Create a struct for id and then write function prototypes for loading shaders using the shader->id 
+
+#### b. Shaders.cpp 
+
+##### readEntireFile()
+return type: char *
+arguments: char *filename
+
+
+##### loadShaderProgramFromFile()
+return type: bool
+arguments: Shader *shader, const char *vertexShaderPath, const char *fragmentShaderPath
+Functions used: readEntireFile(), loadShaderProgramFromData() 
+
+1. read file for vertex shader to a string (for example vertexData), do the same for fragment shader file 
+2. Check if any of the strings are NULL, if so free them 
+3. declare a variable of bool type as the result from loadShaderProgramFromFile() with the data we just got as it's arguments
+4. free the Data we read previously
+5. return the result 
 
 
 
@@ -146,9 +196,9 @@ glBufferSubData(GL_ARRAY_BUFFER,    0,      sizeof(data),  &data )
                                           bytes to copy
 
 
-
+$^3$ in glVertexAttribData(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)\*6, (void *)(sizeof(float)\*3)) for the pointer (void \*) type conversion is neccessary
 
 
 ### Resources
 
-- Useful website for finding ogl functions *https://docs.gl*_
+- Useful website for finding ogl functions *https://docs.g*_
