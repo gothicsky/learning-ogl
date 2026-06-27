@@ -16,3 +16,8 @@ Unfortunately couldn't progress on the opengl tutorial series again, spent 4 hou
 ## Day Seven
 
 Finally I'm back to opengl tutorials, I've been rooting for them for quite a few days! Wrote my first simple vertex and fragment shader in glsl today. Spent almost an hour trying to set up a proper glsl warnings for clion. The tutorial was using _GLSL language integration (for VS2022)_ and clion plugins for glsl seemed lacking so I turned to gemini for some suggestions, ended up integrating _glslangValidator_ using File Watcher (not sure if its right to put it that way), it was some desperate struggle to get something working. After that I was able to write my first shaders, it was much simpler than I thought tbh and didn't take me long. For the remaining  2 hours 20 minutes or so I revised the previous topics from the ogl tutorial from my paper notes, rewriting the code without returning much to the tutorial and updating _notes.md_ in the progress. I felt a bit lost and I think it was necessary for me to refresh these topics I learned since I've been away from the tutorials for a few days. I also watched resizing window and colored triangle videos but didn't implement them yet nor take notes. 
+
+
+## Day Eight 
+
+I finished some more tutorials, deeply frustrated with the assignment, spent about 4 hours 10 minutes purely for opengl. I also finished revising the loading shaders part. I'm very frustared with writing shaders on my own and editing them I found some ways to get the first question done but I'm not satisfied with my answers, I will be back. 
