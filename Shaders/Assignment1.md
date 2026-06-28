@@ -11,7 +11,7 @@ The hint describes the solution for getting a gray triangle? If that's the case 
     out_color.rgb *= 0;
     out_color.rgb += 0.6;
 
-To get the triangle in the image, in the fragment shader 
+To get the triangle in the image, in the vertex shader 
 
     if (v_color.r == 1){
         v_color *= 0;
