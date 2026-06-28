@@ -185,7 +185,7 @@ void main(){
 
 Sixth Question 
 
-Prototype:
+Updated Prototype:
 
 void main(){
 
@@ -195,71 +195,70 @@ void main(){
     out_color.rgb *= 10;
     out_color.rgb = floor(out_color.rgb);
 
-    if (out_color.r == 6 && out_color.g==1 && out_color.b==1){
+    if (out_color.r == 9){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+
+
+    if (out_color.r == 8 && out_color.g == 1){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 8 && out_color.b == 1){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 8){
+        out_color = vec4(1,0, 0, 1);
+        out_color *= 10;
+    }
+
+
+    if (out_color.r == 7 && out_color.g == 1 && out_color.b == 1){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 7 && out_color.g == 2){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 7 && out_color.b == 2){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 7){
+        out_color = vec4(1,0, 0, 1);
+        out_color *= 10;
+    }
+
+
+    if (out_color.r == 6 && out_color.g == 2 && out_color.b == 1){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 6 && out_color.g==1 && out_color.b==2){
+        out_color = vec4(1, 1, 1, 1);
+        out_color *= 10;
+    }
+    else if (out_color.r == 6 && out_color.g==1 && out_color.b==1){
         out_color = vec4(1, 0, 0, 1);
         out_color *= 10;
     }
-
-    if (out_color.r>8){
+    else if (out_color.r == 6 && out_color.g == 2 && out_color.b == 2){
         out_color = vec4(1, 1, 1, 1);
         out_color *= 10;
     }
-
-
-    if (out_color.r > 7 && out_color.g>0){
+    else if (out_color.r == 6 && out_color.g == 3){
         out_color = vec4(1, 1, 1, 1);
         out_color *= 10;
     }
-    else if (out_color.r > 7 && out_color.b>0){
+    else if (out_color.r == 6 && out_color.b==3){
         out_color = vec4(1, 1, 1, 1);
         out_color *= 10;
     }
-    else if (out_color.r>7){
+    else if (out_color.r==6){
         out_color = vec4(1,0, 0, 1);
-        out_color *= 10;
-    }
-
-
-    if (out_color.r > 6 && out_color.g>0 && out_color.b>0){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r > 6 && out_color.g>1){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r > 6 && out_color.b>1){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r>6){
-        out_color = vec4(1,0, 0, 1);
-        out_color *= 10;
-    }
-
-
-    if (out_color.r > 5 && out_color.g>0 && out_color.b>0){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r > 5 && out_color.g>1 && out_color.b>1){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r > 5 && out_color.g>2){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r > 5 && out_color.b>2){
-        out_color = vec4(1, 1, 1, 1);
-        out_color *= 10;
-    }
-    else if (out_color.r>5){
-        out_color = vec4(1,0, 0, 1);
-        out_color *= 10;
-    }
-    if (out_color.r == 6 && out_color.g==1 && out_color.b==1){
-        out_color = vec4(1, 0, 0, 1);
         out_color *= 10;
     }
 
@@ -269,4 +268,3 @@ void main(){
 
 
 }
-
