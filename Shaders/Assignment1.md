@@ -1,4 +1,4 @@
-I figured out how to solve the last question but it is brute forcing it, I need to find a way to automate it. Took me a while but it is about realizing where to look and where the colors intersect, no idea as to how to make this into code that makes sense. I'm uploading this but actually I decided to directly check for equality instead of greater than so this is actually the previous version, I didn't want to have both og them together, I'll upload the new one later 
+A bit messy but the solutions to assignment 1 questions 
 
 1. question
 
@@ -22,21 +22,21 @@ To get the triangle in the image, in the vertex shader
     }
 
 I think I've found the true solution to the first question... In the fragment shader
-    out_color = vec4(v_color.r, v_color.r, v_color.r ,1);
+    { out_color = vec4(v_color.r, v_color.r, v_color.r ,1); }
 
 
 2. question!
 
 in fragment shader
-    out_color = vec4(v_color.r, v_color.g, v_color.g ,1);
+   { out_color = vec4(v_color.r, v_color.g, v_color.g ,1); }
 
 extra: for a vertically flipped version 
-    out_color = vec4(v_color.g, v_color.b, v_color.b ,1);
+  {  out_color = vec4(v_color.g, v_color.b, v_color.b ,1); }
 
 3.  Question 
 
 
-    out_color = vec4(1 - v_color, 1);
+  {  out_color = vec4(1 - v_color, 1); }
 
 4.  Question 
 
