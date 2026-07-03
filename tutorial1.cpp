@@ -1,4 +1,5 @@
 //#define GLFW_INCLUDE_NONE
+#include <ctime>
 #include <GLFW/glfw3.h>
 
 #include "openglErrorReporting.h"
@@ -29,9 +30,26 @@ float triangleData[] = {
     -0.5, 0.5, 0, 0, 1, 0, //vertex 2
     -0.5, -0.5, 0,  0, 0, 1, //vertex 3
     //second triangle
-    0.5, -0.5, 0, 0, 0, 1
+    0.5, -0.5, 0,  0, 0, 1,
+    //Third triangle
+    0.7, 0.5, 0,    0, 1, 0,
+    0.7, 0.7, 0,     0, 0, 1,
+    //Fourth triangle
+    -0.7, -0.5, 0,    0, 1, 0,
+    -0.7, -0.7, 0,     0, 0, 1
 
 };
+
+// float triangleData[] = {
+//     //positions  colors
+//     //x, y,  z   r, g, b
+//     //second triangle
+//     0.5, -0.5, 0, 0, 0, 1,
+//     0.5, 0.5, 0,   1, 0, 0, //vertex 1
+//     -0.5, 0.5, 0, 0, 1, 0, //vertex 2
+//     -0.5, -0.5, 0,  0, 0, 1 //vertex 3
+//
+// };
 
 // // different approach example 1
 // float triangleData[] = {
@@ -51,8 +69,10 @@ float triangleData[] = {
 
 unsigned short indices[] = {
 
-    0, 1, 2, //first triangle
-    0, 2, 3  //second triangle
+    0, 2, 1, //first triangle
+    0, 2, 3,  //second triangle
+    0, 4, 5, // third triangle
+    2, 7, 6  // fourth triangle
 
 };
 
@@ -93,6 +113,14 @@ int main()
 
     enableReportGlErrors();
 
+#pragma region vao
+
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+#pragma endregion
+
 
 #pragma region buffer
 
@@ -100,8 +128,6 @@ int main()
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangleData), triangleData, GL_STATIC_DRAW);
-
-
 
     // // different approach example 1
     // glEnableVertexAttribArray(0);
@@ -120,6 +146,7 @@ int main()
 
 #pragma endregion
 
+
 #pragma region index buffer
 
     GLuint iBuffer = 0;
@@ -129,6 +156,14 @@ int main()
 
 #pragma endregion
 
+
+    glad_glEnable(GL_CULL_FACE);
+    glad_glFrontFace(GL_CW);
+    glad_glCullFace(GL_BACK);
+
+    //unbind the vao after the buffers are done
+    glBindVertexArray(0);
+
 #pragma region loadShader
 
     Shader shader;
@@ -137,7 +172,11 @@ int main()
 
     bind(&shader);
 
+    GLint u_time = uniformLocation(&shader, "u_time");
+
 #pragma endregion
+
+    int choice=0;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -148,9 +187,12 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        bind(&shader);
+        glUniform1f(u_time, (float)(clock()/120));
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
+        glBindVertexArray(vao);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, NULL);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
