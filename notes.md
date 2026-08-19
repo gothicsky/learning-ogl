@@ -75,6 +75,30 @@ We will have four main functions: LoadShaderProgramFromFile for reading and load
                                   bind for telling ogl to use the shader
                                   clear for deleting the shaders 
 
+##3D Movement 
+ 
+ 
+/           --> Object Movements 
+Movements --
+            --> Camera Movements 
+
+            
+ 
+/                -->  Translation: Moving the object along one or more axis' 
+Object Movements -->  Rotation: Rotating vertices around an arbitrary point 
+                 -->  Scaling: Making the object larger or smaller 
+
+#### Translation:
+
+Prerequisites: Dot(Inner) Product (math recap at end)
+
+Note: Should move all the vertices of the object simulteneously otherwise the object deforms.
+
+#### Rotation: 
+
+Arbitrary point is inside the object: Spinning around itself 
+Arbitrary point is outside the object: Spinning around a point
+
 
 
 # How it all works together (Coding Part)
@@ -249,6 +273,17 @@ glBufferSubData(GL_ARRAY_BUFFER,    0,      sizeof(data),  &data )
 $^3$ in glVertexAttribData(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)\*6, (void *)(sizeof(float)\*3)) for the pointer (void \*) type conversion is neccessary
 
 $^4$ arg2 is how many strings we have in the data we are passing(arg3)
+
+
+##Math Recap 
+
+####Inner product
+
+vector1 = v1 = [1,0,4]^T, vector2 = v2 = [2,2,2]^T --IP--> <v1,v2> = 1 * 2 + 0 * 2 + 4 * 2
+     [ 1 0 3 ]           [ 2 0 2 ]                      
+v1 = [ 2 2 1 ]     v2 =  [ 1 1 1 ]   --IP--> <v1,v2> = 1 * 2 + 0 * 0 + 3 * 2 + 2 * 1 + 2 * 1 + 2 * 1 +  ... + 2 * 1
+     [ 1 1 2 ]           [ 0 3 1 ]                     
+
 
 ### Resources
 
