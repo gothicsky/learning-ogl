@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../include/Shader.h"
 #include <string.h>
 #include <stdio.h>
@@ -175,4 +177,48 @@ void clear(Shader *shader) {
     glDeleteProgram(shader->id);
 
     shader->id = 0;
+}
+
+GLint uniformLocation(Shader *shader, const char *name) {
+
+    GLint rez = glGetUniformLocation(shader->id, name);
+
+    if (rez==-1) {
+        //printf("\nThere is an error: Uniform Shader not Loading\n");
+        PRINT_ERR("Uniform shader is not loading");
+    }
+
+    return rez;
+}
+
+GLuint load_texture2d_rep(const char *filename) {
+
+    GLuint texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int w = 0, h = 0, nrChannels = 0;
+
+    unsigned char *data = stbi_load(filename , &w, &h, &nrChannels, 0 );
+
+    if (data) {
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
+            GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        fprintf(stderr, "Couldn't load texture: \" %s \" \n", filename);
+    }
+
+    stbi_image_free(data);
+    return texture;
+
 }
