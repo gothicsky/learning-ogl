@@ -249,59 +249,9 @@ int main()
 
 #pragma region loadTexture
 
-    unsigned int texture1 = 0, texture2 = 0;
-    glGenTextures(1, &texture1);
-    glGenTextures(1, &texture2);
-
-    glBindTexture(GL_TEXTURE_2D, texture1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    int width = 0, height = 0, nrChannels = 0;
-
-    //unsigned char *data = stbi_load(RESOURCES_PATH "rockbrow.jpg", &width, &height, &nrChannels, 0);
-    unsigned char *data1 = stbi_load(RESOURCES_PATH "container.jpg", &width, &height, &nrChannels, 0);
-    //unsigned char *data = stbi_load(RESOURCES_PATH "pig.png", &width, &height, &nrChannels, 0);
-
-    if (data1) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-            GL_UNSIGNED_BYTE, data1);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        fprintf(stderr, "Failed to load texture1");
-    }
-
-    //Texture2
-
-    glBindTexture(GL_TEXTURE_2D, texture2);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    unsigned char *data2 = stbi_load(RESOURCES_PATH "rockbrow.jpg", &width, &height, &nrChannels, 0);
-
-    if (data2) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-            GL_UNSIGNED_BYTE, data2);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        fprintf(stderr, "Failed to load texture2");
-    }
-
-    stbi_image_free(data1);
-    stbi_image_free(data2);
+    GLuint texture[2];
+    texture[0] = load_texture2d_rep(RESOURCES_PATH "container.jpg");
+    texture[1] = load_texture2d_rep(RESOURCES_PATH "rockbrow.jpg");
 
 #pragma endregion
 
@@ -355,10 +305,10 @@ int main()
         glUniform1i(glGetUniformLocation(shader.id, "texture2"), 1);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, texture[0]);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, texture[1]);
 
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
