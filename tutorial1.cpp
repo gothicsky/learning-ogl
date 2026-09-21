@@ -14,8 +14,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 
 #include "imgui.h"
+
+#define PI 3.141592653589
 
 #define PRINT_ERR(s) (fprintf(stderr ,"\nThere is an error: %s\n", s))
 #define PRINT_LINE (fprintf(stdout, "On line: %d", __LINE__))
@@ -43,17 +46,23 @@
 //       -0.5, 0.5, 0.0,    0., 0, 1,   //0., 1.               //vertex 4
 // };
 
+// float triangleData[] = {
+//     //positions  colors
+//     //x, y,  z            r, g, b     texCoord
+//       0.5, 0.5,  0.0,     1, 0, 0,    1., 1.,              //vertex 1
+//       0.5, -0.5, 0.0,     0, 1, 0,    1., 0.,              //vertex 2
+//       -0.5, -0.5, 0.0,    0, 0, 1,    0., 0.,              //vertex 3
+//       -0.5, 0.5, 0.0,     0, 0, 1,    0., 1.               //vertex 4
+// };
+
 float triangleData[] = {
     //positions  colors
     //x, y,  z            r, g, b     texCoord
-      0.5, 0.5,  0.0,     1, 0, 0,    1., 1.,              //vertex 1
-      0.5, -0.5, 0.0,     0, 1, 0,    1., 0.,              //vertex 2
-      -0.5, -0.5, 0.0,    0, 0, 1,    0., 0.,              //vertex 3
-      -0.5, 0.5, 0.0,     0, 0, 1,    0., 1.               //vertex 4
+    0.5, 0.5,  0.0,     1, 0, 0,    1., 1.,              //vertex 1
+    0.5, -0.5, 0.0,     0, 1, 0,    1., 0.,              //vertex 2
+    -0.5, -0.5, 0.0,    0, 0, 1,    0., 0.,              //vertex 3
+    -0.5, 0.5, 0.0,     0, 0, 1,    0., 1.               //vertex 4
 };
-
-
-//Triangle Data for filled background 2 triangles
 
 // float triangleData[] = {
 //     //positions  colors
@@ -117,15 +126,6 @@ float triangleData[] = {
 // };
 
 
-float texCoords[] = {
-
-    0. , 0. , //low-left corner
-    1. , 0. , //low-right corner
-    0.5 , 1.  //top-center corner
-
-};
-
-
 unsigned short indices[] = {
 
     0, 1, 2, //first triangle
@@ -183,7 +183,7 @@ int main()
 
 #pragma region buffer
 
-    GLuint buffer = 0;
+    GLuint buffer = 0; //actually vbo (vertex buffer object)
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangleData), triangleData, GL_STATIC_DRAW);
@@ -213,7 +213,7 @@ int main()
 
 #pragma region index buffer
 
-    GLuint iBuffer = 0;
+    GLuint iBuffer = 0; //actually ebo (element buffer object)
     glGenBuffers(1, &iBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -244,6 +244,8 @@ int main()
 
     GLint u_mouse = uniformLocation(&shader, "u_mouse");
 
+    GLint u_shift = uniformLocation(&shader, "u_shift");
+
 #pragma endregion
 
 
@@ -251,7 +253,7 @@ int main()
 
     GLuint texture[2];
     texture[0] = load_texture2d_rep(RESOURCES_PATH "container.jpg");
-    texture[1] = load_texture2d_rep(RESOURCES_PATH "rockbrow.jpg");
+    texture[1] = load_texture2d_rep(RESOURCES_PATH "smiley3.jpg");
 
 #pragma endregion
 
@@ -259,11 +261,19 @@ int main()
     int choice=0;
 
     float scale = 0.0; //animation variable for gWorldLocation
+    float delta = 0.01; //scale change
+    float scaling = 0.5; //scale for scaling
+
+    float texOp = 0.0;
+
+    // xyz for saving movement - might delete or rebrand later
+    float x=0,y=0,z=0;
 
     while (!glfwWindowShouldClose(window))
     {
 
         //window size and init color
+
         int w=0, h=0;
         glfwGetWindowSize(window, &w, &h);
         glViewport(0, 0, w, h);
@@ -287,12 +297,111 @@ int main()
 
         //gWorld area
 
-        scale += 0.01;
+        scale += delta;
 
+        if ((scale >= PI/4) || (scale <= -PI/4)) {
+            delta *= -1.0;
+        }
 
-        Matrix4f world;
+        Matrix4f world, m1, m2, m3;
         //matrix4f_init_translation(&world, sinf(scale), 0.0 ,0.0);
-        matrix4f_init_translation(&world, normalMouseX, normalMouseY ,0.0);
+        //matrix4f_init_translation(&world, normalMouseX, normalMouseY ,0.0);
+
+        matrix4f_init_rot_z(&m1, scale);
+        matrix4f_init_translation(&m2, x, y, 0.0);
+        matrix4f_init_usc(&m3, scaling);
+
+        mult_matrix4f(&m2, &m3, &world);
+        mult_matrix4f(&world, &m1, &m3);
+
+        world = m3;
+
+        //move and place
+
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+
+            //printf("Up key pressed \n");
+
+            matrix4f_init_translation(&m1, normalMouseX, normalMouseY, 0.0);
+            matrix4f_init_usc(&m2, scaling);
+
+            mult_matrix4f(&m1, &m2, &world);
+
+            x = normalMouseX;
+            y = normalMouseY;
+
+        }
+
+        //adjust scaling
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+
+            //printf("Up key pressed \n");
+
+            if (scaling >= 0.5 && scaling <= 1.5) {
+                scaling += 0.01;
+            }
+            else if (scaling > 1.5){
+                scaling = 1.5;
+            }
+            else {
+                scaling = 0.5;
+            }
+
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+
+            //printf("Down key pressed \n");
+
+            if (scaling >= 0.5 && scaling <= 1.5) {
+                scaling -= 0.01;
+            }
+            else if (scaling > 1.5){
+                scaling = 1.5;
+            }
+            else {
+                scaling = 0.5;
+            }
+
+        }
+
+
+        //u_shift arrow input
+
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+
+            //printf("Up key pressed \n");
+
+            if (texOp >= 0.0 && texOp <= 1.0) {
+                texOp += 0.01;
+                //printf("texOp is increased: %f \n", texOp);
+            }
+            else if (texOp > 1.0){
+                texOp = 1.0;
+            }
+            else {
+                texOp = 0.0;
+            }
+
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+
+            //printf("Down key pressed \n");
+
+            if (texOp >= 0.0 && texOp <= 1.0) {
+                texOp -= 0.01;
+                //printf("texOp is decreased: %f \n", texOp);
+            }
+            else if (texOp > 1.0){
+                texOp = 1.0;
+            }
+            else {
+                texOp = 0.0;
+            }
+
+        }
 
         // uniforms
         bind(&shader);
@@ -300,6 +409,7 @@ int main()
         glUniform1f(u_time, (float)glfwGetTime());
         glUniform2f(u_resolution, (float)w, (float)h);
         glUniform2f(u_mouse, (float)mouseX, glslMouseY);
+        glUniform1f(u_shift, texOp);
 
         glUniform1i(glGetUniformLocation(shader.id, "texture1"), 0);
         glUniform1i(glGetUniformLocation(shader.id, "texture2"), 1);
