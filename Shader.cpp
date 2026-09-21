@@ -205,11 +205,81 @@ GLuint load_texture2d_rep(const char *filename) {
 
     int w = 0, h = 0, nrChannels = 0;
 
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load(filename , &w, &h, &nrChannels, 0 );
 
     if (data) {
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
+            GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        fprintf(stderr, "Couldn't load texture: \" %s \" \n", filename);
+    }
+
+    stbi_image_free(data);
+    return texture;
+
+}
+
+GLuint load_texture2d_clamp(const char *filename) {
+
+    GLuint texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int w = 0, h = 0, nrChannels = 0;
+
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load(filename , &w, &h, &nrChannels, 0 );
+
+    if (data) {
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
+            GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        fprintf(stderr, "Couldn't load texture: \" %s \" \n", filename);
+    }
+
+    stbi_image_free(data);
+    return texture;
+
+}
+
+
+GLuint load_atexture2d_rep(const char *filename) {
+
+    GLuint texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int w = 0, h = 0, nrChannels = 0;
+
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load(filename , &w, &h, &nrChannels, 4 );
+
+    if (data) {
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
             GL_UNSIGNED_BYTE, data);
 
         glGenerateMipmap(GL_TEXTURE_2D);
