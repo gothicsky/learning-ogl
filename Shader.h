@@ -20,4 +20,6 @@ GLint uniformLocation(Shader *shader, const char *name);
 
 GLuint load_texture2d_rep(const char *filename);
 
+GLuint load_texture2d_clamp(const char *filename);
+
 #endif
